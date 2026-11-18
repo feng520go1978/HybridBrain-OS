@@ -1,0 +1,26 @@
+# LiteLLM Router Configuration
+# OLLAMA_BASE_URL is set by start_gateway.bat or the deployment environment.
+model_list:
+  - model_name: weak-model
+    litellm_params:
+      model: ollama/qwen2.5:7b
+      api_base: os.environ/OLLAMA_BASE_URL
+      api_key: ollama
+      weight: 9
+  - model_name: back-model
+    litellm_params:
+      model: ollama/granite-3b
+      api_base: os.environ/OLLAMA_BASE_URL
+      api_key: ollama
+      weight: 1
+
+router_settings:
+  routing_strategy: simple-shuffle
+  num_retries: 2
+  timeout: 300
+
+litellm_settings:
+  drop_params: true
+  fallbacks:
+    - weak-model:
+        - back-model
